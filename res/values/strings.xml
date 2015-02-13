@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <string name="app_name">Cardiff UCAS Guide</string>
+    <string name="title_section1">Beacon</string>
+    <string name="title_section2">History</string>
+    <string name="title_section3">Cardiff</string>
+    <string name ="title_section4">ComSci</string>
+    <string name="action_settings">Settings</string>
+
+</resources>
