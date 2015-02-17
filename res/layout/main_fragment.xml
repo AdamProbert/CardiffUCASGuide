@@ -9,7 +9,7 @@
     tools:context="com.adamprobert.cardiffucasguide.MainActivity$PlaceholderFragment" >
 
     <TextView
-        android:id="@+id/section_label"
+        android:id="@+id/content_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

@@ -1,7 +1,11 @@
 package com.adamprobert.cardiffucasguide.main_activity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
+import android.content.Context;
+import android.graphics.Region;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,26 +20,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.adamprobert.cardiffucasguide.R;
-import com.adamprobert.cardiffucasguide.fragments.Beacon;
+import com.adamprobert.cardiffucasguide.fragments.BeaconFragment;
 import com.adamprobert.cardiffucasguide.fragments.Cardiff;
 import com.adamprobert.cardiffucasguide.fragments.ComSci;
 import com.adamprobert.cardiffucasguide.fragments.History;
+import com.estimote.sdk.Beacon;
+import com.estimote.sdk.BeaconManager;
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
-	/**
-	 * The {@link android.support.v4.view.PagerAdapter} that will provide
-	 * fragments for each of the sections. We use a {@link FragmentPagerAdapter}
-	 * derivative, which will keep every loaded fragment in memory. If this
-	 * becomes too memory intensive, it may be best to switch to a
-	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-	 */
 	SectionsPagerAdapter mSectionsPagerAdapter;
-
-	/**
-	 * The {@link ViewPager} that will host the section contents.
-	 */
 	ViewPager mViewPager;
+	
+	private Context context;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +42,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 		// Set up the action bar.
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		actionBar.setTitle(Html.fromHtml("<font color='#be2929'>Cardiff UCAS Guide </font>"));
+		actionBar.setTitle(Html.fromHtml("<font color='#cc0000'>Cardiff UCAS Guide </font>"));
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the activity.
@@ -73,6 +70,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 			// this tab is selected.
 			actionBar.addTab(actionBar.newTab().setText(mSectionsPagerAdapter.getPageTitle(i)).setTabListener(this));
 		}
+
+		
+
 	}
 
 	@Override
@@ -123,12 +123,10 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 		@Override
 		public Fragment getItem(int position) {
 			// getItem is called to instantiate the fragment for the given page.
-			// Return a PlaceholderFragment (defined as a static inner class
-			// below).
-			
+
 			switch (position) {
 			case 0:
-				Beacon beacon = new Beacon();
+				BeaconFragment beacon = new BeaconFragment();
 				return beacon;
 			case 1:
 				History history = new History();
@@ -144,7 +142,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 				Cardiff fragment = new Cardiff();
 				return fragment;
 			}
-			
+
 		}
 
 		@Override
@@ -163,10 +161,23 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 				return getString(R.string.title_section2).toUpperCase(l);
 			case 2:
 				return getString(R.string.title_section3).toUpperCase(l);
-			case 3: return getString(R.string.title_section4).toUpperCase(l);
+			case 3:
+				return getString(R.string.title_section4).toUpperCase(l);
 			}
 			return null;
 		}
-	}	
+	}
+
+	
+
+	// Method to convert Integer list to int[]
+	public static int[] convertIntegers(List<Integer> input) {
+		int[] output = new int[input.size()];
+		for (int i = 0; i < output.length; i++) {
+			output[i] = input.get(i).intValue();
+		}
+		return output;
+	}
+	
 
 }

@@ -7,5 +7,6 @@
     <string name="title_section3">Cardiff</string>
     <string name ="title_section4">ComSci</string>
     <string name="action_settings">Settings</string>
+    <string name = "icon">This is the the icon for the History list</string>
 
 </resources>
