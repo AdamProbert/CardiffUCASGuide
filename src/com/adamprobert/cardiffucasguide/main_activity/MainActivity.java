@@ -1,11 +1,11 @@
 package com.adamprobert.cardiffucasguide.main_activity;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Locale;
 
 import android.content.Context;
-import android.graphics.Region;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,10 +24,9 @@ import com.adamprobert.cardiffucasguide.fragments.BeaconFragment;
 import com.adamprobert.cardiffucasguide.fragments.Cardiff;
 import com.adamprobert.cardiffucasguide.fragments.ComSci;
 import com.adamprobert.cardiffucasguide.fragments.History;
-import com.estimote.sdk.Beacon;
-import com.estimote.sdk.BeaconManager;
 
-public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
+
+public class MainActivity extends ActionBarActivity implements ActionBar.TabListener{
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
@@ -44,8 +43,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		actionBar.setTitle(Html.fromHtml("<font color='#cc0000'>Cardiff UCAS Guide </font>"));
 
-		// Create the adapter that will return a fragment for each of the three
-		// primary sections of the activity.
+		
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
 		// Set up the ViewPager with the sections adapter.
@@ -177,7 +175,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 			output[i] = input.get(i).intValue();
 		}
 		return output;
-	}
-	
+	}	
 
 }

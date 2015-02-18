@@ -300,7 +300,7 @@ int id end 0x7f050013
 int id expand_activities_button 0x7f050026
 int id expanded_menu 0x7f05002c
 int id firstLine 0x7f050043
-int id historyList 0x7f050044
+int id historyList 0x7f050045
 int id home 0x7f050014
 int id homeAsUp 0x7f050005
 int id icon 0x7f05002a
@@ -310,7 +310,6 @@ int id listMode 0x7f050001
 int id list_item 0x7f050029
 int id middle 0x7f050012
 int id never 0x7f050009
-int id noContent 0x7f050045
 int id no_beacons 0x7f050040
 int id none 0x7f050010
 int id normal 0x7f050000
@@ -336,6 +335,7 @@ int id showHome 0x7f050004
 int id showTitle 0x7f050006
 int id split_action_bar 0x7f05001e
 int id submit_area 0x7f050039
+int id swiperefresh 0x7f050044
 int id tabMode 0x7f050002
 int id title 0x7f05002b
 int id top_action_bar 0x7f050020

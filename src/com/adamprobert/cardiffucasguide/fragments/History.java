@@ -6,145 +6,95 @@ import java.util.List;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.adamprobert.cardiffucasguide.R;
+import com.adamprobert.cardiffucasguide.main_activity.BeaconTracker;
 import com.adamprobert.cardiffucasguide.main_activity.Content;
+import com.adamprobert.cardiffucasguide.main_activity.ConvertBeaconToContent;
+import com.estimote.sdk.Beacon;
 
-public class History extends Fragment{
-	
+public class History extends Fragment {
+
 	Context context;
 	HistoryListAdapter lA;
 	List<Content> items;
+	List<Beacon> knownBeacons;
 	ListView list;
-	
-	public History(){
-		
+	SwipeRefreshLayout mSwipeRefreshLayout;
+
+	public History() {
+
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		
+
 		if (getActivity() != null) {
 			context = getActivity();
 		}
 
 		View rootView = inflater.inflate(R.layout.history_layout, container, false);
+
+		mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
+		mSwipeRefreshLayout.setColorScheme(R.color.bggrey, R.color.red, R.color.red, R.color.red);
+		
+
 		list = (ListView) rootView.findViewById(R.id.historyList);
 		items = new ArrayList<Content>();
-		Content c1 = new Content("Windows Lab","Content", "drawable/antenna2","For all your Windows needs!", 1);
-		Content c2 = new Content("Linux Lab","Content", "drawable/antenna2","For all your Linux needs!", 2);
-		Content c3 = new Content("Mac Lab","Content", "drawable/antenna2","For all your Mac needs!", 3);
+		Content c1 = new Content("There aint no beacons yet!", "Content", "drawable/antenna2", "Motherfucker!", 1);
 		items.add(c1);
-		items.add(c2);
-		items.add(c3);
-		
+
 		lA = new HistoryListAdapter(context, R.layout.history_layout, items);
 		list.setAdapter(lA);
 
+		mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				Log.d("UCAS", "onRefresh called from SwipeRefreshLayout");
+				update();
+
+			}
+
+		});
+
 		return rootView;
 	}
-	
-	
-	
-	
+
+	public void onResume() {
+		super.onResume();
+
+	}
+
+	public void onPause() {
+		Log.d("UCAS", "History - onPauseHasBeenCalled!");
+		super.onPause();
+
+	}
+
+	public void update() {
+		Log.d("UCAS", "History - update has been called");
+		knownBeacons = BeaconTracker.getInstance().getBeacons();
+		Log.d("UCAS", "History - knownBeacons size = " + knownBeacons.size());
+
+		ConvertBeaconToContent converter;
+		items = new ArrayList<Content>();
+
+		for (Beacon b : knownBeacons) {
+			converter = new ConvertBeaconToContent(b);
+			items.add(converter.convert());
+			Log.d("UCAS", "History - items have added:" + converter.convert().getTitle());
+		}
+
+		lA.setNewItems(items);
+		lA.notifyDataSetChanged();
+		Log.d("UCAS", "History - Adapter should have updated!");
+
+	}
+
 }
-
-
-
-
-
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//import android.content.Context;
-//import android.os.Bundle;
-//import android.support.v4.app.ListFragment;
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
-//import android.widget.AdapterView;
-//import android.widget.ListView;
-//import android.widget.TextView;
-//
-//import com.adamprobert.cardiffucasguide.R;
-//import com.adamprobert.cardiffucasguide.main_activity.MainActivity.HistoryUpdate;
-//
-//public class History extends ListFragment implements HistoryUpdate {
-//	private int[] knownBeacons;
-//	private List<String> listContent;
-//	private Context context;
-//	private boolean beaconFlag;
-//	HistoryListAdapter adapter;
-//	View rootView;
-//
-//	public History() {
-//
-//		if (getActivity() != null) {
-//			context = getActivity();
-//		}
-//		beaconFlag = false;
-//
-//		Bundle bundle = getArguments();
-//		if (bundle != null) {
-//			knownBeacons = new int[bundle.getIntArray("knownBeacons").length];
-//			knownBeacons = bundle.getIntArray("knownBeacons");
-//			listContent = new ArrayList<String>();
-//			for (int i = 1; i < 5; i++) {
-//				listContent.add("Well Done! You found beacon: " + Integer.toString(i));
-//			}
-//			beaconFlag = true;
-//
-//		}
-//
-//	}
-//
-//	@Override
-//	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//
-//		rootView = inflater.inflate(R.layout.history_layout, container, false);
-//
-//		return rootView;
-//	}
-//
-//	@Override
-//	public void onStart() {
-//		super.onStart();
-//
-//		if (beaconFlag == true) {
-//
-//			final ListView listview = (ListView) rootView.findViewById(android.R.id.list);
-//
-//			adapter = new HistoryListAdapter(context, R.layout.history_item_layout, listContent);
-//
-//			listview.setAdapter(adapter);
-//
-//		} else {
-//			final TextView textView = (TextView) rootView.findViewById(R.id.noContent);
-//			textView.setText("Sorry, no beacons found yet.");
-//		}
-//	}
-//
-//	public void updateHistory() {
-//
-//		listContent = new ArrayList<String>();
-//		for (int i : knownBeacons) {
-//			listContent.add("Well Done! You found beacon: " + knownBeacons[i]);
-//		}
-//
-//		adapter.notifyDataSetChanged();
-//
-//	}
-//
-//	@Override
-//	public void onHistoryUpdate(int[] listContent) {
-//		this.knownBeacons = listContent;
-//		updateHistory();
-//
-//	}
-//
-//}

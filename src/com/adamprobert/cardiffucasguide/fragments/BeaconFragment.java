@@ -1,7 +1,5 @@
 package com.adamprobert.cardiffucasguide.fragments;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
@@ -17,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.adamprobert.cardiffucasguide.R;
+import com.adamprobert.cardiffucasguide.main_activity.BeaconTracker;
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
@@ -29,16 +28,9 @@ public class BeaconFragment extends Fragment {
 	private BeaconManager beaconManager;
 	private static final String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
 	private static final Region ALL_ESTIMOTE_BEACONS = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, null, null);
-	private ArrayList<Integer> knownBeacons;
-	private static HashMap<Integer, String> contentMap;
 
 	public BeaconFragment() {
 
-		knownBeacons = new ArrayList<Integer>();
-		contentMap = new HashMap<Integer, String>();
-		contentMap.put(1, "You have found the 1st beacon! Awesome!");
-		contentMap.put(2, "You have found the 2nd beacon! Awesome!");
-		contentMap.put(3, "You have found the 3rd beacon! Awesome!");
 	}
 
 	@Override
@@ -63,41 +55,6 @@ public class BeaconFragment extends Fragment {
 			textView.setText("Please enable bluetooth");
 		}
 
-		
-		/**
-		 * NOT SURE IF I NEED A RANGING LISTENER
-		 * THE MONITORING LISTENER SEEMS TO BE WORKING MUCH BETTER
-		 */
-		beaconManager.setRangingListener(new BeaconManager.RangingListener() {
-
-			@Override
-			public void onBeaconsDiscovered(Region region, List<Beacon> beacons) {
-				// Log beacons found
-				System.out.println("Ranged beacons: " + beacons);
-
-				/**
-				 * Loop through beacons found If Beacon is already known -
-				 * ignore it If new - get content for beacon
-				 */
-				for (Beacon b : beacons) {
-					if (!knownBeacons.contains(b.getMinor())) {
-						knownBeacons.add(b.getMinor());
-						String content = getContent(b.getMinor());
-
-						TextView contentText = (TextView) rootView.findViewById(R.id.content);
-						contentText.setText(content);
-						
-
-					}
-
-				}
-
-			}
-
-		});
-
-		beaconManager.setForegroundScanPeriod(5, 5);
-		
 		beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
 			TextView textView1 = (TextView) rootView.findViewById(R.id.no_beacons);
 			TextView textView2 = (TextView) rootView.findViewById(R.id.beacon_details);
@@ -118,9 +75,15 @@ public class BeaconFragment extends Fragment {
 				contentText.setText("On Entered Region has been called");
 
 				String foundBeacons = "";
+
 				for (Beacon b : beacons) {
 					foundBeacons += b.getMinor() + ", ";
+					if (!BeaconTracker.getInstance().hasBeaconBeenFound(b)) {
+						BeaconTracker.getInstance().addBeacon(b);
+
+					}
 				}
+
 				textView1.setText(foundBeacons);
 				textView2.setText("Ranged beacons: " + beacons);
 
@@ -129,14 +92,6 @@ public class BeaconFragment extends Fragment {
 		return rootView;
 	}
 
-	/**
-	 * This will be the method to access server
-	 */
-	private String getContent(int minor) {
-
-		return contentMap.get(minor);
-
-	}
 
 	@Override
 	public void onStart() {
@@ -146,7 +101,6 @@ public class BeaconFragment extends Fragment {
 			@Override
 			public void onServiceReady() {
 				try {
-					beaconManager.startRanging(ALL_ESTIMOTE_BEACONS);
 					beaconManager.startMonitoring(ALL_ESTIMOTE_BEACONS);
 				} catch (RemoteException e) {
 					Toast.makeText(context, "Beacon manager cant start ranging", Toast.LENGTH_LONG).show();
@@ -158,10 +112,9 @@ public class BeaconFragment extends Fragment {
 	@Override
 	public void onStop() {
 		try {
-			beaconManager.stopRanging(ALL_ESTIMOTE_BEACONS);
 			beaconManager.stopMonitoring(ALL_ESTIMOTE_BEACONS);
 		} catch (RemoteException e) {
-			Log.e("beaconManager", "Cannot stop but it does not matter now", e);
+			Log.e("UCAS", "Cannot stop beacon manager but it does not matter now", e);
 		}
 		super.onStop();
 
@@ -172,12 +125,11 @@ public class BeaconFragment extends Fragment {
 		beaconManager.disconnect();
 		super.onDestroy();
 	}
-	
-	@Override
-	public void onAttach(Activity activity){
-		super.onAttach(activity);
 
-       
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		
 	}
 
 }

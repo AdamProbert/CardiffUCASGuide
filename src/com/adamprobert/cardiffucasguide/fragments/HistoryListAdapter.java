@@ -27,7 +27,13 @@ public class HistoryListAdapter extends ArrayAdapter<String> {
 		this.items = items;
 
 	}
-
+	
+	public void setNewItems(List<Content> newItems)
+	{
+		items = null;
+		this.items = newItems;
+	}
+	
 	@Override
 	public int getCount() {
 		return items.size();
@@ -55,7 +61,6 @@ public class HistoryListAdapter extends ArrayAdapter<String> {
 		
 		TextView textView = (TextView) rowView.findViewById(R.id.secondLine);
 		textView.setText(items.get(position).getSubHeading());
-		
 
 		ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
 		String uri = "@" + items.get(position).getImageLocation();
@@ -66,4 +71,5 @@ public class HistoryListAdapter extends ArrayAdapter<String> {
 		return rowView;
 	}
 
+	
 }
