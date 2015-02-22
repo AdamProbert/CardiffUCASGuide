@@ -1,10 +1,6 @@
 package com.adamprobert.cardiffucasguide.main_activity;
 
-
-import java.util.List;
 import java.util.Locale;
-
-import android.content.Context;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,11 +9,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
 
 import com.adamprobert.cardiffucasguide.R;
 import com.adamprobert.cardiffucasguide.fragments.BeaconFragment;
@@ -25,13 +21,10 @@ import com.adamprobert.cardiffucasguide.fragments.Cardiff;
 import com.adamprobert.cardiffucasguide.fragments.ComSci;
 import com.adamprobert.cardiffucasguide.fragments.History;
 
-
-public class MainActivity extends ActionBarActivity implements ActionBar.TabListener{
+public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
-	
-	private Context context;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +36,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		actionBar.setTitle(Html.fromHtml("<font color='#cc0000'>Cardiff UCAS Guide </font>"));
 
-		
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
 		// Set up the ViewPager with the sections adapter.
@@ -69,28 +61,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 			actionBar.addTab(actionBar.newTab().setText(mSectionsPagerAdapter.getPageTitle(i)).setTabListener(this));
 		}
 
-		
-
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -98,14 +68,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
-	}
-
-	@Override
-	public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-	}
-
-	@Override
-	public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 	}
 
 	/**
@@ -166,15 +128,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 		}
 	}
 
-	
+	@Override
+	public void onTabReselected(Tab arg0, FragmentTransaction arg1) {
+	}
 
-	// Method to convert Integer list to int[]
-	public static int[] convertIntegers(List<Integer> input) {
-		int[] output = new int[input.size()];
-		for (int i = 0; i < output.length; i++) {
-			output[i] = input.get(i).intValue();
-		}
-		return output;
-	}	
+	@Override
+	public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {
+	}
 
 }

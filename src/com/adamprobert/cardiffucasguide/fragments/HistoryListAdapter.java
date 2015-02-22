@@ -41,6 +41,7 @@ public class HistoryListAdapter extends ArrayAdapter<String> {
 
 	@Override
 	public long getItemId(int position) {
+
 		return items.get(position).getBeaconMinorID();
 	}
 

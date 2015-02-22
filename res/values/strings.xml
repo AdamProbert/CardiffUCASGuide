@@ -12,5 +12,6 @@
     <string name = "enableBluetooth"> This app requires bluetooth to be on. Please enable</string>
     <string name = "enable">Enable</string>
     <string name = "image">Image</string>
+    <string name = "refresh">Pull Down to Refresh</string>
 
 </resources>

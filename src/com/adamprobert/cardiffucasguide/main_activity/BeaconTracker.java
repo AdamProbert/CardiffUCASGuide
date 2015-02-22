@@ -13,21 +13,24 @@ public class BeaconTracker {
 	public static BeaconTracker getInstance() {
 		return bt;
 	}
-	
-	public List<Beacon> getBeacons(){
-		return knownBeacons;
-	}
-	
-	public void addBeacon(Beacon b){
-		knownBeacons.add(b);
-	}	
-	
-	public boolean hasBeaconBeenFound(Beacon b){
-		
-		if(knownBeacons.contains(b)){
-			return true;
+
+	public List<Beacon> getBeacons() {
+		if (knownBeacons.size() == 0) {
+			return null;
+		} else {
+			return knownBeacons;
 		}
-		else{
+	}
+
+	public void addBeacon(Beacon b) {
+		knownBeacons.add(b);
+	}
+
+	public boolean hasBeaconBeenFound(Beacon b) {
+
+		if (knownBeacons.contains(b)) {
+			return true;
+		} else {
 			return false;
 		}
 	}
