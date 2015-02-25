@@ -29,6 +29,9 @@ public class Client extends AsyncTask<String, Void, Void> {
 		/**
 		 * Connect to external IP Router routes traffic to my server
 		 */
+		
+        
+
 
 		String hostName = "82.10.140.245";
 		int portNumber = 6453;
@@ -39,9 +42,10 @@ public class Client extends AsyncTask<String, Void, Void> {
 		try {
 			socket = new Socket(hostName, portNumber);
 		} catch (IOException e1) {
-			Log.e("UCAS", "Client - error creating socket, printwriter, bufferedReader");
+			Log.e("UCAS", "Client - error creating socket");
 			e1.printStackTrace();
 		}
+		
 
 		/** Send file server data.csv */
 

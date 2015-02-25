@@ -1,7 +1,12 @@
 package com.adamprobert.cardiffucasguide.main_activity;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Locale;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,7 +18,7 @@ import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.util.Log;
-import android.view.View;
+import android.widget.Toast;
 
 import com.adamprobert.cardiffucasguide.R;
 import com.adamprobert.cardiffucasguide.fragments.BeaconFragment;
@@ -23,13 +28,60 @@ import com.adamprobert.cardiffucasguide.fragments.History;
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
-	SectionsPagerAdapter mSectionsPagerAdapter;
-	ViewPager mViewPager;
+	private SectionsPagerAdapter mSectionsPagerAdapter;
+	private ViewPager mViewPager;
+	private static final String PREFS_NAME = "UCASPreferencesFile";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		
+		/**
+		 * If first time running:
+		 * Will display welcome message / tutorial
+		 * Create log file
+		 * 
+		 */
+		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+		boolean firstRun = settings.getBoolean("firstRun", true);
+		
+		if(firstRun){
+			
+			// Welcome message
+			Toast.makeText(this, "Welcome to your UCAS day tour guide!", Toast.LENGTH_LONG).show();
+			
+			// Create file
+			String filename = "data.csv";
+			
+			String _RELEASE = "BUILD VERSION: " + android.os.Build.VERSION.RELEASE;
+			String _DEVICE = "DEVICE: " + android.os.Build.DEVICE; 
+			String _MODEL = "MODEL: " + android.os.Build.MODEL; 
+			String _PRODUCT = "PRODUCT: " + android.os.Build.PRODUCT; 
+			String _HARDWARE = "HARDWARE: " + android.os.Build.HARDWARE;
+			String _USER = "USER: " + android.os.Build.USER; 
+
+			String info = _USER + "\n" + _RELEASE + "\n" + _DEVICE + "\n" + _MODEL + "\n" + _PRODUCT + "\n" + _HARDWARE;
+			FileOutputStream fos = null;
+			try {
+				fos = openFileOutput(filename, Context.MODE_PRIVATE);
+				fos.write(info.getBytes());
+				fos.close();
+				Log.d("UCAS", "data.csv has been created");
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			// Set first run to false
+			SharedPreferences.Editor editor = settings.edit();
+			editor.putBoolean("firstRun", false);
+			editor.commit();
+		}
 
 		// Set up the action bar.
 		final ActionBar actionBar = getSupportActionBar();
@@ -41,10 +93,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-
-		// When swiping between different sections, select the corresponding
-		// tab. We can also use ActionBar.Tab#select() to do this if we have
-		// a reference to the Tab.
 		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 			@Override
 			public void onPageSelected(int position) {
@@ -52,12 +100,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 			}
 		});
 
-		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-			// Create a tab with text corresponding to the page title defined by
-			// the adapter. Also specify this Activity object, which implements
-			// the TabListener interface, as the callback (listener) for when
-			// this tab is selected.
+
 			actionBar.addTab(actionBar.newTab().setText(mSectionsPagerAdapter.getPageTitle(i)).setTabListener(this));
 		}
 
@@ -65,8 +109,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
 	@Override
 	public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-		// When the given tab is selected, switch to the corresponding page in
-		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
 	}
 

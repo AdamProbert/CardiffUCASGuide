@@ -4,5 +4,6 @@
     <color name="black">#000000</color>
     <color name="red">#cc0000</color>
     <color name = "bggrey">#e6e6e6</color>
+    <color name = "white">#ffffff</color>
  
 </resources>

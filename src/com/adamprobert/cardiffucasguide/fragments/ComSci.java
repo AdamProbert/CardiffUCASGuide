@@ -1,13 +1,8 @@
 package com.adamprobert.cardiffucasguide.fragments;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,26 +35,6 @@ public class ComSci extends Fragment {
 
 		button = (Button) rootView.findViewById(R.id.button1);
 		button.setOnClickListener(handleClick);
-
-		// Create file
-
-		String FILENAME = "data.csv";
-		String string = "THIS IS A STRING FROM INSIDE data.csv";
-
-		FileOutputStream fos = null;
-		try {
-			fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
-			fos.write(string.getBytes());
-			fos.close();
-			Log.d("UCAS", "data.csv has been created");
-
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 
 		return rootView;
 	}

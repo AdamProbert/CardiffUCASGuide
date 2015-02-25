@@ -13,5 +13,20 @@
     <string name = "enable">Enable</string>
     <string name = "image">Image</string>
     <string name = "refresh">Pull Down to Refresh</string>
+    <string name = "accept">Accept</string>
+    <string name = "questionnaire_welcome">Hi there! I hope you\'ve enjoyed your day here at Cardiff and that this application has been of some help to you. I\'d like to thank you for helping me out with my dissertation, the data you\'ve generated for me today will form the groundwork for an exciting investigation into Beacon technology in the entertainment industry. I have one last request for you, would you mind completing the survey below? Should only take a minute and will provide me with fantastic primary research. Please could you rate each question from 1 to 5</string>
+    <string name = "questionnaire_short_welcome">Hi there! thanks for your help today! Please fill in the survey below.</string>
+    <string-array name = "questions">
+        <item>The efficiency of this app</item>
+        <item>Usefulness of the app</item>
+        <item>Likeness for beacons</item>
+        <item>Question 4</item>
+        <item>Question 5</item>
+        <item>Question 6</item>
+        <item>Question 7</item>
+        <item>Question 8</item>
+        <item>Question 9</item>
+        <item>Question 10</item>
+    </string-array>
 
 </resources>

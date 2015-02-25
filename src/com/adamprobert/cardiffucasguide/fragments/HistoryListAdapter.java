@@ -64,7 +64,8 @@ public class HistoryListAdapter extends ArrayAdapter<String> {
 		textView.setText(items.get(position).getSubHeading());
 
 		ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
-		String uri = "@" + items.get(position).getImageLocation();
+//		String uri = "@" + items.get(position).getImageLocation();
+		String uri = "@drawable/antenna2";
 		int imageResource = context.getResources().getIdentifier(uri, null, context.getPackageName());
 		Drawable res = context.getResources().getDrawable(imageResource);
 		imageView.setImageDrawable(res);

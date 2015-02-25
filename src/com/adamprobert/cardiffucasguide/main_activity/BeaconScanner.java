@@ -1,7 +1,14 @@
 package com.adamprobert.cardiffucasguide.main_activity;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import android.content.Context;
+import android.util.Log;
 
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
@@ -47,7 +54,7 @@ public class BeaconScanner implements Runnable {
 						}
 					} else {
 						closestBeacon = b;
-						
+
 					}
 				}
 
@@ -57,8 +64,10 @@ public class BeaconScanner implements Runnable {
 				 */
 				if (!BeaconTracker.getInstance().hasBeaconBeenFound(closestBeacon)) {
 					BeaconTracker.getInstance().addBeacon(closestBeacon);
+					
 
 				}
+				
 				callback.onGetBeacon(closestBeacon);
 
 			}
@@ -72,8 +81,8 @@ public class BeaconScanner implements Runnable {
 
 	public interface BeaconCallback {
 		void onGetBeacon(Beacon b);
-
 		void onLeftBeaconRange();
 	}
 
+	
 }

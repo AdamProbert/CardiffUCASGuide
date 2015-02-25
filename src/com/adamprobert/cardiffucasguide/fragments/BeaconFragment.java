@@ -1,5 +1,9 @@
 package com.adamprobert.cardiffucasguide.fragments;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -28,6 +32,7 @@ import com.adamprobert.cardiffucasguide.main_activity.BeaconScanner;
 import com.adamprobert.cardiffucasguide.main_activity.BeaconScanner.BeaconCallback;
 import com.adamprobert.cardiffucasguide.main_activity.Content;
 import com.adamprobert.cardiffucasguide.main_activity.ConvertBeaconToContent;
+import com.adamprobert.cardiffucasguide.main_activity.Questionnaire;
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
@@ -45,19 +50,19 @@ public class BeaconFragment extends Fragment implements BeaconCallback {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		if (getActivity() != null) {
 			context = getActivity();
 
 		}
-		
+
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		rootView = inflater.inflate(R.layout.content_layout, container, false);
-		
+
 		/**
 		 * Checks if device supports Bluetooth
 		 * 
@@ -82,7 +87,7 @@ public class BeaconFragment extends Fragment implements BeaconCallback {
 						}).show();
 			}
 		}
-		
+
 		TextView title = (TextView) rootView.findViewById(R.id.content_title);
 		title.setText("Searching...");
 
@@ -105,7 +110,7 @@ public class BeaconFragment extends Fragment implements BeaconCallback {
 		ProgressBar pBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
 		pBar.setVisibility(View.GONE);
-		
+
 		ConvertBeaconToContent converter = new ConvertBeaconToContent(beacon);
 		Content content = converter.convert();
 		title.setText(content.getTitle());
@@ -134,64 +139,64 @@ public class BeaconFragment extends Fragment implements BeaconCallback {
 		title.setText("Searching...");
 		text.setText("");
 		image.setVisibility(View.GONE);
-		
 
 	}
-	
-	private void showNotification(Beacon b){
-		
+
+	private void showNotification(Beacon b) {
+
 		/**
 		 * Create Beacon Notification
 		 */
 		ConvertBeaconToContent converter = new ConvertBeaconToContent(b);
 		Content content = converter.convert();
-		
+
 		NotificationCompat.Builder myBuilder = new NotificationCompat.Builder(context)
-		.setSmallIcon(R.drawable.antenna2)
-		.setContentTitle("BEACON FOUND!")
-		.setContentText(content.getTitle());
-		
+				.setSmallIcon(R.drawable.antenna2).setContentTitle("BEACON FOUND!").setContentText(content.getTitle());
+
 		/**
 		 * Create intent to handle clicking the notification
+		 * Beacon 5 is for the questionnaire
 		 */
-		
-		Intent notifyIntent =
-		        new Intent(context, BeaconNotification.class);
-		// Sets the Activity to start in a new, empty task
-		notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-		                        | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		Intent notifyIntent;
 
-		notifyIntent.putExtra("beaconID", b.getMinor());
+		if (b.getMinor() == 5) {
+			
+			notifyIntent = new Intent(context, Questionnaire.class);
+			Log.d("UCAS", "Intent has been made for questionnaire");
+
+
+		} else {
+
+			notifyIntent = new Intent(context, BeaconNotification.class);
+			notifyIntent.putExtra("beaconID", b.getMinor());
+
+		}
 		
+		// Sets the Activity to start in a new, empty task
+		notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
 		// Creates the PendingIntent
-		PendingIntent notifyPendingIntent =
-		        PendingIntent.getActivity(
-		        context,
-		        0,
-		        notifyIntent,
-		        PendingIntent.FLAG_UPDATE_CURRENT
-		);
-		
+		PendingIntent notifyPendingIntent = PendingIntent.getActivity(context, 0, notifyIntent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
+
 		Log.d("UCAS", "Pending intent has been created");
 
+		// Builder preferences
 
-		//Builder preferences 
-		
 		myBuilder.setContentIntent(notifyPendingIntent);
 		myBuilder.setAutoCancel(true);
-        myBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000});
-		
+		myBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000 });
+
 		// Notifications are issued by sending them to the
 		// NotificationManager system service.
-		NotificationManager mNotificationManager =
-		    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		
+		NotificationManager mNotificationManager = (NotificationManager) context
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+
 		// Builds an anonymous Notification object from the builder, and
 		// passes it to the NotificationManager
 		mNotificationManager.notify(b.getMinor(), myBuilder.build());
 		Log.d("UCAS", "Notification manager is waiting");
-		
-		
+
 	}
 
 	@Override
@@ -225,7 +230,6 @@ public class BeaconFragment extends Fragment implements BeaconCallback {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		
 
 	}
 
@@ -233,12 +237,44 @@ public class BeaconFragment extends Fragment implements BeaconCallback {
 	public void onGetBeacon(Beacon b) {
 		showContent(b);
 		showNotification(b);
+		updateLog(b);
 
 	}
 
 	@Override
 	public void onLeftBeaconRange() {
 		removeContent();
+
+	}
+
+	// This is where we update the file with relevant info!
+	private void updateLog(Beacon b) {
+
+		String text = "\n" + b.toString();
+		FileOutputStream fos = null;
+		String file = "data.csv";
+
+		try {
+			fos = context.openFileOutput(file, Context.MODE_APPEND | Context.MODE_PRIVATE);
+			fos.write(text.getBytes());
+
+		} catch (FileNotFoundException e) {
+			Log.d("UCAS", "updateLog - file not found");
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.d("UCAS", "update log - ioexception");
+			e.printStackTrace();
+		} finally {
+			// Close streams
+			try {
+				if (fos != null) {
+					fos.close();
+				}
+			} catch (IOException ioe) {
+				Log.d("UCAS", "Error closing file output stream");
+			}
+
+		}
 
 	}
 
