@@ -73,6 +73,9 @@ public class History extends Fragment {
 
 		});
 
+		/*
+		 * Refreshes the list view, when user pulls down.
+		 */
 		mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
@@ -101,21 +104,24 @@ public class History extends Fragment {
 		super.onPause();
 
 	}
-
+	
+	
+	/*
+	 * Used to update the list of history 
+	 * Called when fragment is created
+	 * Called when pull to refresh 
+	 */
 	public void update() {
-		Log.d("UCAS", "History - update has been called");
+
 		items = new ArrayList<Content>();
 		ConvertBeaconToContent converter;
 		
 		if (BeaconTracker.getInstance().getBeacons() != null) {
-			
 			knownBeacons = BeaconTracker.getInstance().getBeacons();
-			Log.d("UCAS", "History - knownBeacons size = " + knownBeacons.size());
 
 			for (Beacon b : knownBeacons) {
 				converter = new ConvertBeaconToContent(b);
 				items.add(converter.convert());
-				Log.d("UCAS", "History - items have added:" + converter.convert().getTitle());
 			}
 
 			

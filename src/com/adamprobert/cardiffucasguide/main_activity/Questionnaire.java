@@ -102,5 +102,8 @@ public class Questionnaire extends ActionBarActivity {
 		LogFile log = new LogFile(this);
 		log.appendToFile(stringAnswers);
 		
+		Toast.makeText(this, "Thankyou very much!", Toast.LENGTH_LONG).show();
+		
+		this.finish();
 	}
 }
