@@ -12,21 +12,51 @@
     <string name = "enableBluetooth"> This app requires bluetooth to be on. Please enable</string>
     <string name = "enable">Enable</string>
     <string name = "image">Image</string>
-    <string name = "refresh">Pull Down to Refresh</string>
+    <string name = "refresh">Tap to Refresh</string>
     <string name = "accept">Accept</string>
     <string name = "questionnaire_welcome">Hi there! I hope you\'ve enjoyed your day here at Cardiff and that this application has been of some help to you. I\'d like to thank you for helping me out with my dissertation, the data you\'ve generated for me today will form the groundwork for an exciting investigation into Beacon technology in the entertainment industry. I have one last request for you, would you mind completing the survey below? Should only take a minute and will provide me with fantastic primary research. Please could you rate each question from 1 to 5</string>
-    <string name = "questionnaire_short_welcome">Hi there! thanks for your help today! Please fill in the survey below.</string>
+    <string name = "questionnaire_short_welcome">Thank you for helping me out with my investigation today! I have one last request though, would you mind filling out the survey below? Selecting how much you agree with the statement.</string>
+    <string name ="cardiff_section1">Cardiff is the capital and largest city in Wales, the tenth largest city in the United Kingdom. With a student population of 28,000, Cardiff University makes up a large segment of the population.</string>
+    <string name = "cardiff_section2">Cardiff is a compact city making it very easy to get around. You won\'t need to bring a car with you, everything can be accessed either on foot, by bike or using public transport. Most University Residences are within walking distance of the city centre and the majority of academic buildings. Residences located further are connected by regular bus services. </string>
+    <string name = "cardiff_section3">In the heart of Cardiff’s compact city centre lies Cardiff Castle . Its walls and fairytale towers conceal over 2,000 years of history, kick-started by the Romans — the first to build a fort on the site. The National Museum Cardiff houses Wales’ national archaeology, geology and natural history collections, as well as one of Europe’s finest art collections. In addition, the Wales Millennium Centre is one of the most varied and lively performing arts centres in Europe. There are also plenty of other things to do in Cardiff Bay.</string>
+    <string name = "cardiff_section4">As a University student, you couldn\'t pick a better location to embark on your studies! Cardiff is the perfect blend, of entertainment, community, diversity and opportunity. The students\’ union is one of the best in the UK, offering a newly refirbished, very popular nightclub. A classic, welcoming student bar - The Taf. Hundreds of groups, unions and societies that are actively run and attended by thousands of students. It\'s a hub of student activity, and a great asset to the university.</string>
+    <string name = "comsci_section1">So, you want to study Computer Science? Good choice! Here\'s the number one reason why:\nEmployability\nTechnology is the fastest growing industry in the world today. Startups like WhatsApp are popping up EVERYWHERE. In just 5 years from startup to selling out WhatsApp were worth £22 Billion. That\'s right. £22 Billion. There is no other industry that can demonstrate an example of growth to that extent in such a short space of time. And here\'s the best part! It\'s people like you and I leading the charge. Companies need more technology to survive this global change; Apps, Websites, Security, Databases, Graphics, Servers, Data mining, Genetic Algorithms&#8230; The list goes on. All of these aspects are researched, designed, developed, tested and integrated by Computer Scientists, Software Engineers or Programmers. Making Computer Science one of the most employable professions. </string>
+    <string name = "comsci_section2">There\'s a few personal traits or skills I believe a programmer should have.\nFirst of which:
+         Patience and Persistence, you won\'t become an expert programmer over night. But by Year 3 you will have the ability to 
+         program practically anything that comes to mind. For example, in my spare time i\'m working on a Bluetooth Controller 
+         that controls a Drone I found in the woods a few weeks ago.\nSecond; Problem Solving. A program is just a solution to
+          a problem. Broken down, it becomes more problems, and more, and more. It\'s a challenge to solve all of these 
+          components, before combining and integrating to create a complete solution. For me, this is the best part.
+         \nThird: The ability to abstract, think on several levels; This is probably the most important skill in programming.
+          Computers are some of the most complex systems we\'ve ever built, and if while programming you had to keep in mind 
+          every aspect of the functioning computer at all levels, it would be a Herculean task to write even a simple program. 
+          Luckily for us, we don\'t have to do that, but even so, a system\'s architecture can become incredibly complex and hard 
+          to comprehend.</string>
+    <string name = "comsci_section3">
+Year 1\nThe modules taught in your first two semesters are designed to introduce the fundamental computing skills and concepts that will form the basis of your degree. These include the programming of algorithms using the Python and Java™ languages, an understanding of Internet and web technologies, computer architecture and operating systems. You will demonstrate the skills you have acquired and show individual creativity and originality throughout the year as you complete short projects.
+\n\nYear 2\nBuilding on the foundations of the first year, the modules taught in the second year expand your understanding, skills and experience by introducing more advanced topics. The structure and processing of data is explored and simple algorithms are expanded into applications that are able to communicate via networks. You will apply these new skills when you work with others in a team project to design and implement a software system in a professional manner.
+\n\nYear 3\nIn the final year of your degree you will focus on emerging technologies and advanced topics of interest to you when you choose which modules to study. Themes such as image processing and multimedia or advanced database topics and information systems management (using industry standard products such as Oracle™) are taught alongside contemporary topics such as computer security, forensics and high performance computing. During this year you will complete an individual project under the supervision of a member of staff; your own interests drive the project topic.
+        </string>
+        <string name = "comsci_section5">This three-year programme starts by introducing the basic computing skills and concepts which will underpin your degree and future career.
+Short projects in year 1 are followed by a substantial team project in year 2, when you will use your new skills and knowledge to design and implement a software system. In year 3, you will focus on emerging technologies and undertake an individual project centred on your own interests.</string>
+    <string name = "comsci_section4">There\'s also a fantastic social element to Computer Science here at Cardiff. Our Society representitives do a great job of organising social events. From Hackathons, Gadget Show and Cinema trips to Club nights, Karaoke and the Pub Quiz. There\'s always something going on and ComSci students are definitely not the hermits we\'re stereotyped to be!  </string>
+    <string name = "somewhatAgree">Somewhat agree</string>
+    <string name = "neutral">Neutral</string>
+    <string name = "somewhatDisagree">Somwhat disagree</string>
+    <string name = "disagree">Disagree</string>
+    
+    
     <string-array name = "questions">
-        <item>The efficiency of this app</item>
-        <item>Usefulness of the app</item>
-        <item>Likeness for beacons</item>
-        <item>Question 4</item>
-        <item>Question 5</item>
-        <item>Question 6</item>
-        <item>Question 7</item>
-        <item>Question 8</item>
-        <item>Question 9</item>
-        <item>Question 10</item>
+        <item>The response speed when entering a beacon zone was fast.</item>
+        <item>This application was successful as a secondary tour guide.</item>
+        <item>I would like to try more contextually aware applications.</item>
+        <item>I am concerned with the privacy aspects, surrounding beacon technology.</item>
+        <item>I found the contextually aware information beneficial.</item>
+        <item>Notifications were triggered accurately upon entering a beacon-designated environment. </item>
+        <item>I am interested to find out more regarding beacon technology. </item>
+        <item>I would be more likely to download and install a beacon-enabled application.</item>
+        <item>I noticed the application affecting my devices battery. </item>
+        <item>Overall, I am impressed with the functionality of this application.</item>
     </string-array>
 
 </resources>

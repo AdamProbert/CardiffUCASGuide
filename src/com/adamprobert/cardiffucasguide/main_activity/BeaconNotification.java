@@ -14,6 +14,8 @@ import com.adamprobert.cardiffucasguide.R;
 
 public class BeaconNotification extends Activity{
 	
+	private int beaconID;
+	private boolean actualNotification;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +25,15 @@ public class BeaconNotification extends Activity{
 		
 		// Get beacon id
 		Bundle extras = getIntent().getExtras();
-		int beaconID = extras.getInt("beaconID");
+		beaconID = extras.getInt("beaconID");
+		actualNotification = extras.getBoolean("actualNotification");
+		
+		//Update log file
+		if(actualNotification){
+			BeaconTracker.getInstance().addNotificationTime(beaconID);
+		}
+		
+
 		
 		// Get views and assign relevant content
 		ConvertBeaconToContent converter = new ConvertBeaconToContent(beaconID);
@@ -50,6 +60,16 @@ public class BeaconNotification extends Activity{
 		
 		
 	};
+	
+	 @Override
+	    public void onDestroy()
+	    {
+		 	if(actualNotification){
+		 		BeaconTracker.getInstance().addNotificationTime(beaconID);
+		 	}
+	        super.onDestroy();
+	        
+	    }
 	
 
 }

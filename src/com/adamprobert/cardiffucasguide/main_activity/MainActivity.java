@@ -55,12 +55,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 			// Create file
 			String filename = "data.csv";
 			
-			String _RELEASE = "BUILD VERSION: " + android.os.Build.VERSION.RELEASE;
-			String _DEVICE = "DEVICE: " + android.os.Build.DEVICE; 
-			String _MODEL = "MODEL: " + android.os.Build.MODEL; 
-			String _PRODUCT = "PRODUCT: " + android.os.Build.PRODUCT; 
-			String _HARDWARE = "HARDWARE: " + android.os.Build.HARDWARE;
-			String _USER = "USER: " + android.os.Build.USER; 
+			String _RELEASE = "#BUILD VERSION: " + android.os.Build.VERSION.RELEASE;
+			String _DEVICE = "#DEVICE: " + android.os.Build.DEVICE; 
+			String _MODEL = "#MODEL: " + android.os.Build.MODEL; 
+			String _PRODUCT = "#PRODUCT: " + android.os.Build.PRODUCT; 
+			String _HARDWARE = "#HARDWARE: " + android.os.Build.HARDWARE;
+			String _USER = "#USER: " + android.os.Build.USER; 
 
 			String info = _USER + "\n" + _RELEASE + "\n" + _DEVICE + "\n" + _MODEL + "\n" + _PRODUCT + "\n" + _HARDWARE;
 			FileOutputStream fos = null;
@@ -172,10 +172,36 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
 	@Override
 	public void onTabReselected(Tab arg0, FragmentTransaction arg1) {
+		//Only called when tab is pressed - not swiped to
+		LogFile log = new LogFile(this);
+		log.appendToFile("# TAB " + arg0.getPosition() + " SELECTED");
 	}
 
 	@Override
 	public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {
+	}
+	
+	@Override
+	public void onPause(){
+		LogFile log = new LogFile(this);
+		log.appendToFile("# MAIN ACTIVITY PAUSED");
+		
+		super.onPause();
+	}
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		LogFile log = new LogFile(this);
+		log.appendToFile("# MAIN ACTIVITY RESUMED");
+		
+	}
+	@Override
+	public void onDestroy(){
+		
+		LogFile log = new LogFile(this);
+		log.appendToFile("# MAIN ACTIVITY DESTROYED");
+		super.onDestroy();
 	}
 
 }

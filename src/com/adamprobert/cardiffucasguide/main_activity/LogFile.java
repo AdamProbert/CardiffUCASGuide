@@ -12,6 +12,7 @@ public class LogFile {
 	private Context context;
 	
 	public LogFile(Context context){
+		Log.d("UCAS", "new log file object created");
 		this.context = context;
 		
 	}
@@ -48,5 +49,6 @@ public class LogFile {
 		
 		
 	}
+	
 
 }

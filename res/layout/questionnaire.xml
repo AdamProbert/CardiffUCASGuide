@@ -2,34 +2,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginRight="5dp"
     android:orientation="vertical" >
 
     <TextView
         android:id="@+id/questionnaireText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_weight="0"
+        android:padding="4dp"
         android:text="@string/questionnaire_short_welcome"
         android:textColor="@color/black"
-        android:textSize="16sp"
-        android:layout_margin="8dp"
-        android:padding="4dp"
-        android:layout_weight="0" >
+        android:textSize="14sp" >
     </TextView>
+
+    <ImageView
+        android:id="@+id/imageViewBleh"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="10dp"
+        android:layout_weight="0"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/image"
+        android:src="@drawable/agree" />
 
     <ListView
         android:id="@+id/questionList"
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight = "1"
-        android:layout_margin="8dp"
+        android:layout_margin="3dp"
+        android:layout_weight="1"
         android:gravity="center"
-        android:padding="4dp" />
+        android:padding="2dp" />
 
     <Button
         android:id="@+id/acceptButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-		android:layout_weight="0"
+        android:layout_weight="0"
         android:text="@string/accept"
         android:textColor="@color/red" >
     </Button>

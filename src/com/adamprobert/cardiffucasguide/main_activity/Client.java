@@ -1,17 +1,18 @@
 package com.adamprobert.cardiffucasguide.main_activity;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Map;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public class Client extends AsyncTask<String, Void, Void> {
@@ -31,6 +32,23 @@ public class Client extends AsyncTask<String, Void, Void> {
 	@Override
 	protected Void doInBackground(String... params) {
 
+		
+		// Make sure file log is up to date
+		// This needs to go somewhere else
+		
+		LogFile log = new LogFile(context);
+		Map<Integer, String> beaconTimes = BeaconTracker.getInstance().getTimeTracker();
+		
+		// Loop through map looking for beacon minor id's
+		for(int i = 1;i<=9;i++){
+			if(beaconTimes.containsKey(i)){
+				String input = "B" + " " + Integer.toString(i);
+				String times = " " + beaconTimes.get(i);
+				log.appendToFile(input + times);
+				
+			}
+		}
+		
 		/*
 		 * Check network connection before connecting socket If no connection,
 		 * wait for a connection
@@ -39,12 +57,14 @@ public class Client extends AsyncTask<String, Void, Void> {
 		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-		boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-
-		while (!isConnected) {
+		boolean networkConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+		
+		// Waits for a secure connection
+		while (!networkConnected) {
 
 			activeNetwork = cm.getActiveNetworkInfo();
-			isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+			networkConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+			
 			try {
 				Thread.sleep(5000);
 				Log.d("UCAS", "CLient - waiting for secure connection");
@@ -61,7 +81,7 @@ public class Client extends AsyncTask<String, Void, Void> {
 		String hostName = "82.10.140.245";
 		int portNumber = 6453;
 
-		/** Creates connection and initialises Writer/Reader */
+		/** Creates connection and initializes Writer/Reader */
 		Socket socket = null;
 
 		try {
@@ -74,27 +94,56 @@ public class Client extends AsyncTask<String, Void, Void> {
 		Log.d("UCAS", "CLient - Connected to server");
 
 
-		/** Send file server data.csv */
+		
+		
+		
+		TelephonyManager tManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+		String uuid = tManager.getDeviceId();
+		
+		DataOutputStream dos = null;
+	    
+	    try {
+	    	
+	    	/*
+			 * Send device UUID
+			 */
+	    	
+			BufferedOutputStream bos = new BufferedOutputStream(socket.getOutputStream());
 
-		try {
-
-			FileInputStream fis = context.openFileInput("data.csv");
+	    	dos = new DataOutputStream(bos);
+	    	dos.writeUTF(uuid);
+	    	
+	    	/*
+	    	 * Send File
+	    	 */
+	    	
+	    	FileInputStream fis = context.openFileInput("data.csv");
 			byte[] byteArray = new byte[(int) fis.getChannel().size()];
 			BufferedInputStream bis = new BufferedInputStream(fis);
-
 			bis.read(byteArray, 0, byteArray.length);
-			OutputStream os = socket.getOutputStream();
+			bis.close();
+			
+			// Sending
+			dos.write(byteArray);
 			Log.d("UCAS", "Sending...");
-
-			os.write(byteArray, 0, byteArray.length);
-			os.flush();
+			dos.flush();
 			Log.d("UCAS", "Sent!");
 
+
+	    } catch (IOException e) {
+	    	Log.d("UCAS","Error sending file");
+	        System.err.print(e);
+	    } 
+
+
+		
+		try {
+
+			dos.close();
 			socket.close();
-			bis.close();
 
 		} catch (IOException e) {
-			Log.e("UCAS", "Client - error sending data");
+			Log.e("UCAS", "Client - error closing connection");
 			e.printStackTrace();
 		}
 

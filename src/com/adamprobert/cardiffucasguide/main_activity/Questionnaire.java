@@ -12,13 +12,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.adamprobert.cardiffucasguide.R;
 
 public class Questionnaire extends ActionBarActivity {
-	
+
 	ListView questionList;
 	List<String> questions;
 	QuestionnaireListAdapter qA;
@@ -29,12 +28,12 @@ public class Questionnaire extends ActionBarActivity {
 		Log.d("UCAS", "Questionnaire has been created");
 		setContentView(R.layout.questionnaire);
 
+		// Set title to questionnaire and red
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setTitle(Html.fromHtml("<font color='#cc0000'>Questionnaire</font>"));
-		
+
 		// Views
-		
-		questionList = (ListView)findViewById(R.id.questionList);
+		questionList = (ListView) findViewById(R.id.questionList);
 		questions = Arrays.asList(getResources().getStringArray(R.array.questions));
 		qA = new QuestionnaireListAdapter(this, R.layout.questionnaire, questions);
 		questionList.setAdapter(qA);
@@ -42,7 +41,9 @@ public class Questionnaire extends ActionBarActivity {
 		Button acceptButton = (Button) findViewById(R.id.acceptButton);
 		acceptButton.setOnClickListener(clickListener);
 		
-		
+		// add notification time
+		BeaconTracker.getInstance().addNotificationTime(5);
+
 
 	};
 
@@ -50,60 +51,30 @@ public class Questionnaire extends ActionBarActivity {
 		public void onClick(View view) {
 			switch (view.getId()) {
 			case R.id.acceptButton:
-				
-				boolean allQuestionsAnswered = true;
 
-				/**
-				 * Check if all boxes have been selected Save questionnaire file
-				 */
-				for (int i = 0; i < questionList.getCount(); i++) {
-					View v = questionList.getChildAt(i);
-					RadioGroup answer = (RadioGroup) v.findViewById(R.id.answer);
-					if(answer.getCheckedRadioButtonId() == -1){
-						Toast.makeText(getBaseContext(), "Please ensure all questions are answered", Toast.LENGTH_LONG).show();
-						allQuestionsAnswered = false;
-						
-					}
+				if (qA.allAnswered()) {
+					
+					String sAnswers = qA.getCheckedValues();
+
+					LogFile log = new LogFile(Questionnaire.this);
+					log.appendToFile(sAnswers);
+
+					Toast.makeText(Questionnaire.this, "Thank you very much!", Toast.LENGTH_LONG).show();
+					
+					// Add questionnaire close time
+					BeaconTracker.getInstance().addNotificationTime(5);
+					Client client = new Client(Questionnaire.this);
+					client.execute();
+					
+					finish();
+					
+				} else {
+					Toast.makeText(Questionnaire.this, "Please ensure all questions are answered", Toast.LENGTH_LONG)
+							.show();
 				}
-				
-				if(allQuestionsAnswered){
-					getAnswers();	
-				}
-				
-				break;
+
 			}
-
 		}
 	};
 
-	private void getAnswers() {
-		Log.d("UCAS", "Questionnaire - getAnswers called");
-
-		String stringAnswers = "";
-		View v;
-		RadioGroup answer;
-		
-		/*
-		 * Loop through each row of questionnaire
-		 * Collect each answer
-		 * Store in comma separated string
-		 */
-		
-		for (int i = 0; i < questionList.getCount(); i++) {
-	        v = questionList.getChildAt(i);
-	        answer = (RadioGroup) v.findViewById(R.id.answer);
-	        int id = answer.getCheckedRadioButtonId();
-	        View radioButton = answer.findViewById(id);
-	        int checkedId = answer.indexOfChild(radioButton) +1; // Values 1 - 5
-	        
-			stringAnswers += checkedId + ", ";
-	    }
-		
-		LogFile log = new LogFile(this);
-		log.appendToFile(stringAnswers);
-		
-		Toast.makeText(this, "Thankyou very much!", Toast.LENGTH_LONG).show();
-		
-		this.finish();
-	}
 }

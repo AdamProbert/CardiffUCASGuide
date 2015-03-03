@@ -4,30 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.adamprobert.cardiffucasguide.R;
+import com.adamprobert.cardiffucasguide.main_activity.BeaconNotification;
 import com.adamprobert.cardiffucasguide.main_activity.BeaconTracker;
 import com.adamprobert.cardiffucasguide.main_activity.Content;
 import com.adamprobert.cardiffucasguide.main_activity.ConvertBeaconToContent;
+import com.adamprobert.cardiffucasguide.main_activity.LogFile;
 import com.estimote.sdk.Beacon;
 
 public class History extends Fragment {
@@ -52,8 +47,6 @@ public class History extends Fragment {
 
 		final View rootView = inflater.inflate(R.layout.history_layout, container, false);
 
-		mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
-		mSwipeRefreshLayout.setColorScheme(R.color.bggrey, R.color.red, R.color.red, R.color.red);
 
 		list = (ListView) rootView.findViewById(R.id.historyList);
 		items = new ArrayList<Content>();
@@ -61,10 +54,14 @@ public class History extends Fragment {
 		list.setAdapter(lA);
 		update();
 		
+		Button updateButton = (Button)rootView.findViewById(R.id.refreshButton);
+		
+		
 		list.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				
 				ConvertBeaconToContent converter = new ConvertBeaconToContent(id);
 				Content content = converter.convert();
 				showContent(rootView, content);
@@ -76,20 +73,16 @@ public class History extends Fragment {
 		/*
 		 * Refreshes the list view, when user pulls down.
 		 */
-		mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+		
+		updateButton.setOnClickListener(new View.OnClickListener() {	
 			@Override
-			public void onRefresh() {
-				Handler handler = new Handler();
-				handler.postDelayed(new Runnable() {
-					public void run() {
-						update();
-						mSwipeRefreshLayout.setRefreshing(false);
-					}
-				}, 200);
-
+			public void onClick(View v) {
+				LogFile log = new LogFile(context);
+				log.appendToFile("# HISTORY UPDATE BUTTON PRESSED");
+				update();
 			}
-
 		});
+			
 
 		return rootView;
 	}
@@ -141,32 +134,11 @@ public class History extends Fragment {
 
 	public void showContent(View v, Content content) {
 
-		View popupView = getLayoutInflater(null).inflate(R.layout.content_layout, null);
-		popupView.setBackground(context.getResources().getDrawable(R.drawable.text_box_field));
+		Intent intent = new Intent(context, BeaconNotification.class);
+		intent.putExtra("beaconID", content.getBeaconMinorID()); 
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		context.startActivity(intent);
 
-		PopupWindow popup = new PopupWindow(popupView, 800, 1200);
-		TextView title = (TextView) popupView.findViewById(R.id.content_title);
-		title.setText(content.getTitle());
-		TextView text = (TextView) popupView.findViewById(R.id.content);
-		text.setText(content.getContent());
-		ImageView image = (ImageView) popupView.findViewById(R.id.imageView);
-		ProgressBar pBar = (ProgressBar) popupView.findViewById(R.id.progressBar);
-		pBar.setVisibility(View.GONE);
-
-		String uri = "@" + content.getImageLocation();
-		int imageRes = context.getResources().getIdentifier(uri, null, context.getPackageName());
-		Drawable drawable = context.getResources().getDrawable(imageRes);
-		image.setImageDrawable(drawable);
-
-		/**
-		 * Make popup in focus Dismiss popup when clicking fragment behind popup
-		 * Centre popup in screen
-		 */
-		popup.setFocusable(true);
-		popup.setBackgroundDrawable(new ColorDrawable());
-		int location[] = new int[2];
-		v.getLocationOnScreen(location);
-		popup.showAtLocation(v, Gravity.CENTER, 0, 0);
 	}
 
 }

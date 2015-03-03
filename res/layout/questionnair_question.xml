@@ -46,8 +46,9 @@
         android:layout_alignLeft="@id/answer"
         android:layout_alignParentLeft="true"
         android:layout_centerInParent="true"
-        android:gravity="center"
+        android:gravity="left"
+        android:padding = "2dp"
         android:textColor="@color/red"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 
 </RelativeLayout>

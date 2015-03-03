@@ -1,9 +1,5 @@
 package com.adamprobert.cardiffucasguide.fragments;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -30,12 +26,15 @@ import com.adamprobert.cardiffucasguide.R;
 import com.adamprobert.cardiffucasguide.main_activity.BeaconNotification;
 import com.adamprobert.cardiffucasguide.main_activity.BeaconScanner;
 import com.adamprobert.cardiffucasguide.main_activity.BeaconScanner.BeaconCallback;
+import com.adamprobert.cardiffucasguide.main_activity.Client;
 import com.adamprobert.cardiffucasguide.main_activity.Content;
 import com.adamprobert.cardiffucasguide.main_activity.ConvertBeaconToContent;
+import com.adamprobert.cardiffucasguide.main_activity.LogFile;
 import com.adamprobert.cardiffucasguide.main_activity.Questionnaire;
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
+import com.estimote.sdk.Utils;
 
 public class BeaconFragment extends Fragment implements BeaconCallback {
 
@@ -55,7 +54,6 @@ public class BeaconFragment extends Fragment implements BeaconCallback {
 			context = getActivity();
 
 		}
-
 	}
 
 	@Override
@@ -151,7 +149,14 @@ public class BeaconFragment extends Fragment implements BeaconCallback {
 		Content content = converter.convert();
 
 		NotificationCompat.Builder myBuilder = new NotificationCompat.Builder(context)
-				.setSmallIcon(R.drawable.antenna2).setContentTitle("BEACON FOUND!").setContentText(content.getTitle());
+				.setSmallIcon(R.drawable.antenna2);
+		
+		if(b.getMinor() == 5){
+			myBuilder.setContentTitle("QUESTIONNAIRE");
+		}else{
+			myBuilder.setContentTitle("BEACON FOUND!");
+		}
+		myBuilder.setContentText(content.getTitle());
 
 		/**
 		 * Create intent to handle clicking the notification
@@ -169,6 +174,7 @@ public class BeaconFragment extends Fragment implements BeaconCallback {
 
 			notifyIntent = new Intent(context, BeaconNotification.class);
 			notifyIntent.putExtra("beaconID", b.getMinor());
+			notifyIntent.putExtra("actualNotification", true);
 
 		}
 		
@@ -176,7 +182,7 @@ public class BeaconFragment extends Fragment implements BeaconCallback {
 		notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
 		// Creates the PendingIntent
-		PendingIntent notifyPendingIntent = PendingIntent.getActivity(context, 0, notifyIntent,
+		PendingIntent notifyPendingIntent = PendingIntent.getActivity(context, b.getMinor(), notifyIntent,
 				PendingIntent.FLAG_UPDATE_CURRENT);
 
 		Log.d("UCAS", "Pending intent has been created");
@@ -234,48 +240,39 @@ public class BeaconFragment extends Fragment implements BeaconCallback {
 	}
 
 	@Override
-	public void onGetBeacon(Beacon b) {
+	public void onGetBeacon(Beacon b, boolean showNotificaton) {
+		
+		Log.d("UCAS", "onGetBeacon Called");
+		if (showNotificaton){
+			showNotification(b);
+			updateLog(b);
+			
+			Client client = new Client(context);
+			client.execute();
+
+		}
 		showContent(b);
-		showNotification(b);
-		updateLog(b);
+		
+		
 
 	}
 
 	@Override
 	public void onLeftBeaconRange() {
+		Log.d("UCAS", "onLeftBeaconRange Called");
+
 		removeContent();
 
 	}
 
 	// This is where we update the file with relevant info!
 	private void updateLog(Beacon b) {
+		Log.d("UCAS", "Beaconfragment - distance measurement added");
+		
+		LogFile log = new LogFile(context);
+		log.appendToFile("D " + b.getMinor() + " " + Utils.computeAccuracy(b));
 
-		String text = "\n" + b.toString();
-		FileOutputStream fos = null;
-		String file = "data.csv";
-
-		try {
-			fos = context.openFileOutput(file, Context.MODE_APPEND | Context.MODE_PRIVATE);
-			fos.write(text.getBytes());
-
-		} catch (FileNotFoundException e) {
-			Log.d("UCAS", "updateLog - file not found");
-			e.printStackTrace();
-		} catch (IOException e) {
-			Log.d("UCAS", "update log - ioexception");
-			e.printStackTrace();
-		} finally {
-			// Close streams
-			try {
-				if (fos != null) {
-					fos.close();
-				}
-			} catch (IOException ioe) {
-				Log.d("UCAS", "Error closing file output stream");
-			}
-
-		}
-
+		
 	}
 
 }

@@ -1,14 +1,7 @@
 package com.adamprobert.cardiffucasguide.main_activity;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import android.content.Context;
-import android.util.Log;
 
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
@@ -29,7 +22,7 @@ public class BeaconScanner implements Runnable {
 	@Override
 	public void run() {
 
-		beaconManager.setBackgroundScanPeriod(TimeUnit.SECONDS.toMillis(1), 1);
+		beaconManager.setBackgroundScanPeriod(TimeUnit.SECONDS.toMillis(1), 5);
 		beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
 
 			@Override
@@ -48,27 +41,33 @@ public class BeaconScanner implements Runnable {
 				 * and displays content for that beacon
 				 */
 				for (Beacon b : beacons) {
-					if (closestBeacon != null) {
-						if (b.getRssi() > closestBeacon.getRssi()) {
+					//Ensure beacon is one of mine
+					if (b.getMajor() == 2580) {
+						if (closestBeacon != null) {
+							//Get closest beacon
+							if (b.getRssi() > closestBeacon.getRssi()) {
+								closestBeacon = b;
+							}
+						} else {
 							closestBeacon = b;
-						}
-					} else {
-						closestBeacon = b;
 
+						}
+					}
+					else{
+						continue;
 					}
 				}
 
 				/**
 				 * Used for History fragment Checks if beacon has already been
-				 * found If not, adds to the BeaconTracker
+				 * found. if not, adds to the BeaconTracker
 				 */
 				if (!BeaconTracker.getInstance().hasBeaconBeenFound(closestBeacon)) {
 					BeaconTracker.getInstance().addBeacon(closestBeacon);
-					
-
+					callback.onGetBeacon(closestBeacon, true);
+				} else {
+					callback.onGetBeacon(closestBeacon, false);
 				}
-				
-				callback.onGetBeacon(closestBeacon);
 
 			}
 		});
@@ -80,9 +79,9 @@ public class BeaconScanner implements Runnable {
 	}
 
 	public interface BeaconCallback {
-		void onGetBeacon(Beacon b);
+		void onGetBeacon(Beacon b, boolean showNotification);
+
 		void onLeftBeaconRange();
 	}
 
-	
 }
